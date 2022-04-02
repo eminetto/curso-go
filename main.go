@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/eminetto/curso-go/domain"
 
 func main() {
-	fmt.Println("hello world")
+	domain.CalculaChurrasco(2, 1, 1, true)
 }
