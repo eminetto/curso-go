@@ -1,30 +1,39 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"encoding/json"
+	"net/http"
 
 	"github.com/eminetto/curso-go/domain"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-	churras, err := domain.CalculaChurrasco(domain.Parametros{
-		Homens:          0,
-		Mulheres:        2,
-		Criancas:        3,
-		Acompanhamentos: true,
-	})
-	if err != nil {
-		log.Fatal(err)
-		// panic(err)
-	}
-	imprimeChurrasco(churras)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Post("/", calculaChurrasco)
+	http.ListenAndServe(":3000", r)
 }
 
-func imprimeChurrasco(c domain.Churrasco) {
-	fmt.Printf("Total de pessoas: %d\n", c.TotalPessoas)
-	fmt.Printf("Total de carne (g): %d\n", c.TotalCarne)
-	fmt.Printf("Total de acompanhamentos (g): %d\n", c.TotalAcompanhamentos)
-	fmt.Printf("Total de bebidas não alcoolicas (ml) %d\n", c.NaoAlcoolicas)
-	fmt.Printf("Total de bebidas alcóolicas (ml) %d\n", c.Alcoolicas)
+func calculaChurrasco(w http.ResponseWriter, r *http.Request) {
+	var param domain.Parametros
+	err := json.NewDecoder(r.Body).Decode(&param)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	ch, err := domain.CalculaChurrasco(param)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	err = json.NewEncoder(w).Encode(ch)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
 }

@@ -4,19 +4,19 @@ import "errors"
 
 //Parametros parametros da função CalculaChurrasco
 type Parametros struct {
-	Homens          int
-	Mulheres        int
-	Criancas        int
-	Acompanhamentos bool
+	Homens          int  `json:"homens"`
+	Mulheres        int  `json:"mulheres"`
+	Criancas        int  `json:"criancas"`
+	Acompanhamentos bool `json:"acompanhamentos"`
 }
 
 //Churrasco churrasco calculado
 type Churrasco struct {
-	TotalCarne           int
-	TotalPessoas         int
-	TotalAcompanhamentos int
-	NaoAlcoolicas        int
-	Alcoolicas           int
+	TotalCarne           int `json:"total-carne"`
+	TotalPessoas         int `json:"total-pessoas"`
+	TotalAcompanhamentos int `json:"total-acompanhamentos"`
+	NaoAlcoolicas        int `json:"nao-alcoolicas"`
+	Alcoolicas           int `json:"alcoolicas"`
 }
 
 //CalculaChurrasco faz o cálculo do churrasco
