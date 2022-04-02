@@ -3,11 +3,13 @@ package churrasco
 import (
 	"testing"
 
+	"github.com/eminetto/curso-go/domain"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCalculaChurrascoFantasma(t *testing.T) {
-	_, err := CalculaChurrasco(Parametros{
+	s := NewChurrasco()
+	_, err := s.Calcula(domain.Parametros{
 		Homens:          0,
 		Mulheres:        1,
 		Criancas:        2,
@@ -20,7 +22,8 @@ func TestCalculaChurrascoFantasma(t *testing.T) {
 }
 
 func TestCalculaChurrascoBombando(t *testing.T) {
-	ch, err := CalculaChurrasco(Parametros{
+	s := NewChurrasco()
+	ch, err := s.Calcula(domain.Parametros{
 		Homens:          3,
 		Mulheres:        3,
 		Criancas:        6,
