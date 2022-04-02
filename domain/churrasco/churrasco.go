@@ -1,14 +1,11 @@
-package domain
+package churrasco
 
-import "errors"
+import (
+	"encoding/json"
+	"errors"
 
-//Parametros parametros da função CalculaChurrasco
-type Parametros struct {
-	Homens          int  `json:"homens"`
-	Mulheres        int  `json:"mulheres"`
-	Criancas        int  `json:"criancas"`
-	Acompanhamentos bool `json:"acompanhamentos"`
-}
+	"github.com/eminetto/curso-go/domain"
+)
 
 //Churrasco churrasco calculado
 type Churrasco struct {
@@ -19,8 +16,20 @@ type Churrasco struct {
 	Alcoolicas           int `json:"alcoolicas"`
 }
 
-//CalculaChurrasco faz o cálculo do churrasco
-func CalculaChurrasco(p Parametros) (Churrasco, error) {
+func (c Churrasco) ToJSON() ([]byte, error) {
+	return json.Marshal(c)
+}
+
+//Service define um serviço de churrasco
+type Service struct{}
+
+//NewChurrasco cria um novo churrasco
+func NewChurrasco() Service {
+	return Service{}
+}
+
+//Calcula faz o cálculo do churrasco
+func (s Service) Calcula(p domain.Parametros) (domain.Resultado, error) {
 	churras := Churrasco{}
 	if p.Homens == 0 || p.Mulheres == 0 {
 		// return churras, fmt.Errorf("Homens e mulheres devem ser maiores que zero")
