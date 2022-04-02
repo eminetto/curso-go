@@ -2,17 +2,22 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/eminetto/curso-go/domain"
 )
 
 func main() {
-	churras := domain.CalculaChurrasco(domain.Parametros{
-		Homens:          1,
+	churras, err := domain.CalculaChurrasco(domain.Parametros{
+		Homens:          0,
 		Mulheres:        2,
 		Criancas:        3,
 		Acompanhamentos: true,
 	})
+	if err != nil {
+		log.Fatal(err)
+		// panic(err)
+	}
 	imprimeChurrasco(churras)
 }
 
