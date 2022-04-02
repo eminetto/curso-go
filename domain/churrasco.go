@@ -1,18 +1,30 @@
 package domain
 
-import "fmt"
+//Parametros parametros da função CalculaChurrasco
+type Parametros struct {
+	Homens          int
+	Mulheres        int
+	Criancas        int
+	Acompanhamentos bool
+}
+
+//Churrasco churrasco calculado
+type Churrasco struct {
+	TotalCarne           int
+	TotalPessoas         int
+	TotalAcompanhamentos int
+	NaoAlcoolicas        int
+	Alcoolicas           int
+}
 
 //CalculaChurrasco faz o cálculo do churrasco
-func CalculaChurrasco(homens int, mulheres int, criancas int, acompanhamentos bool) {
-	tc := mulheres*150 + homens*200 + criancas*100
-	tp := mulheres + homens + criancas
-	ta := tp * 50
-	naoAlcoolicas := 400 * tp
-	alcoolicas := 500 * (mulheres + homens)
+func CalculaChurrasco(p Parametros) Churrasco {
+	churras := Churrasco{}
 
-	fmt.Printf("Total de pessoas: %d\n", tp)
-	fmt.Printf("Total de carne (g): %d\n", tc)
-	fmt.Printf("Total de acompanhamentos (g): %d\n", ta)
-	fmt.Printf("Total de bebidas não alcoolicas (ml) %d\n", naoAlcoolicas)
-	fmt.Printf("Total de bebidas alcóolicas (ml) %d\n", alcoolicas)
+	churras.TotalCarne = p.Mulheres*150 + p.Homens*200 + p.Criancas*100
+	churras.TotalPessoas = p.Mulheres + p.Homens + p.Criancas
+	churras.TotalAcompanhamentos = churras.TotalPessoas * 50
+	churras.NaoAlcoolicas = 400 * churras.TotalPessoas
+	churras.Alcoolicas = 500 * (p.Mulheres + p.Homens)
+	return churras
 }
