@@ -28,3 +28,16 @@ func TestCalculaAniversario(t *testing.T) {
 
 	assert.Equal(t, resultadoEsperado, resultadoCalculado)
 }
+
+func TestFestaSemPessoas(t *testing.T) {
+	aniversario := NewAniversario()
+
+	_, err := aniversario.Calcula(domain.Parametros{
+		Homens:          0,
+		Mulheres:        0,
+		Criancas:        0,
+		Acompanhamentos: true,
+	})
+
+	assert.Equal(t, err.Error(), "Festa de aniversario só com aniversariante?")
+}
