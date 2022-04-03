@@ -1,7 +1,55 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/eminetto/curso-go/domain"
+	"github.com/eminetto/curso-go/domain/batizado"
+	"github.com/eminetto/curso-go/domain/churrasco"
+	"github.com/eminetto/curso-go/domain/aniversario"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+)
 
 func main() {
-	fmt.Println("hello world")
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Post("/churrasco", calculaFesta(churrasco.NewChurrasco()))
+	r.Post("/batizado", calculaFesta(batizado.NewBatizado()))
+	r.Post("/aniversario", calculaFesta(aniversario.NewAniversario()))
+	http.ListenAndServe(":3000", r)
+}
+
+func calculaFesta(s domain.Festa) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var param domain.Parametros
+		
+		w.Header().Add("content-type","application/json")
+
+		err := json.NewDecoder(r.Body).Decode(&param)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+		ch, err := s.Calcula(param)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+		j, err := ch.ToJSON()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+		_, err = w.Write(j)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+	}
 }
