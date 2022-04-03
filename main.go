@@ -7,6 +7,7 @@ import (
 	"github.com/eminetto/curso-go/domain"
 	"github.com/eminetto/curso-go/domain/batizado"
 	"github.com/eminetto/curso-go/domain/churrasco"
+	"github.com/eminetto/curso-go/domain/aniversario"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -16,12 +17,16 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Post("/churrasco", calculaFesta(churrasco.NewChurrasco()))
 	r.Post("/batizado", calculaFesta(batizado.NewBatizado()))
+	r.Post("/aniversario", calculaFesta(aniversario.NewAniversario()))
 	http.ListenAndServe(":3000", r)
 }
 
 func calculaFesta(s domain.Festa) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var param domain.Parametros
+		
+		w.Header().Add("content-type","application/json")
+
 		err := json.NewDecoder(r.Body).Decode(&param)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
